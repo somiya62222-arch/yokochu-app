@@ -29,10 +29,11 @@ header.top .wrap{display:flex;align-items:center;justify-content:space-between;g
 .brand{font-family:"Noto Serif JP",serif;font-size:19px;font-weight:700;letter-spacing:.04em}
 .sz{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);border-radius:22px;min-height:44px;padding:0 16px;font-size:15px;cursor:pointer;color:#fff}
 .sz:focus-visible,.tab:focus-visible,.chip:focus-visible,.item:focus-visible,.back:focus-visible,input:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
-.cover{background:linear-gradient(180deg,rgba(42,31,69,.35) 0%,rgba(42,31,69,.78) 55%,rgba(42,31,69,.96) 100%),url(cover.jpg) center 30%/cover no-repeat;color:#fff;padding:clamp(120px,32vw,200px) 0 30px}
+.cover{background:linear-gradient(180deg,var(--deep) 0%,var(--deep2) 100%);color:#fff;padding:0 0 30px}
+.photo{height:clamp(190px,52vw,340px);background:url(cover.jpg) center 35%/cover no-repeat;margin-bottom:22px}
 .cover .wrap{display:block}
 .cover .kicker{font-size:15px;color:var(--glow)}
-.cover h1{text-shadow:0 1px 12px rgba(0,0,0,.35);font-size:clamp(26px,7vw,36px);margin:6px 0 10px}
+.cover h1{font-size:clamp(26px,7vw,36px);margin:6px 0 10px}
 .cover .ref{font-size:15px;opacity:.85}
 .cover .open{margin-top:16px;display:inline-flex;align-items:center;min-height:44px;padding:0 20px;border-radius:24px;background:var(--glow);color:#2a1f45;font-weight:700;text-decoration:none;font-size:16px}
 @media(max-width:420px){.cover .wrap{grid-template-columns:minmax(0,1fr) 84px}}
@@ -94,7 +95,7 @@ nav.tabs{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-to
 <header class="top"><div class="wrap"><div class="brand">横浜中央教会</div><button class="sz" id="sz" aria-pressed="false">文字を大きく</button></div></header>
 
 <section class="view" id="v-home">
-  <div class="cover"><div class="wrap">
+  <div class="cover"><div class="photo" role="img" aria-label="横浜中央教会の礼拝堂"></div><div class="wrap">
     <div>
       <div class="kicker" id="coverKicker">最新の説教</div>
       <h1 id="coverTitle"></h1>
