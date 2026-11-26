@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>横浜中央教会</title>
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="横浜中央教会">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Noto+Serif+JP:wght@500;700&display=swap" rel="stylesheet">
+<style>
+/*
+VOICE: 静かで温かい、教会の受付に置かれた週報のような落ち着き
+IDEA: 二つ折りの週報。表紙に今週の言葉、中を開くと各欄
+PICTURE: 表紙の深い紫の帯にアーチ窓と灯、最新の説教が載る
+COLOUR and TYPE: 待降節の紫 #3a2a5c、紙の白、灯の淡い金 #f1d9a6、明朝の見出し＋ゴシック本文
+LAYOUT: スマホ1カラム、下部タブで欄を切り替え、本文は大きめで読みやすく
+*/
+:root{color-scheme:light dark;--bg:light-dark(#f7f5f1,#17131f);--card:light-dark(#ffffff,#221c2e);--ink:light-dark(#241e2e,#efeaf5);--mute:light-dark(#6b6475,#a79fb3);--line:light-dark(#e6e1da,#352d44);--deep:#3a2a5c;--deep2:#2a1f45;--glow:#f1d9a6;--acc:light-dark(#7a4fb0,#c3a6ee);--fs:17px}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+:root.big{--fs:20px}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 var(--fs)/1.8 "Noto Sans JP",system-ui,sans-serif;overflow-x:clip;padding-bottom:calc(76px + env(safe-area-inset-bottom))}
+h1,h2,h3{font-family:"Noto Serif JP",serif;font-weight:700;line-height:1.35;text-wrap:balance;margin:0}
+button{font:inherit;color:inherit}
+.wrap{max-width:720px;margin:0 auto;padding:0 max(18px,env(safe-area-inset-left))}
+header.top{background:var(--deep);color:#fff;padding:calc(14px + env(safe-area-inset-top)) 0 14px}
+header.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{font-family:"Noto Serif JP",serif;font-size:19px;font-weight:700;letter-spacing:.04em}
+.sz{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);border-radius:22px;min-height:44px;padding:0 16px;font-size:15px;cursor:pointer;color:#fff}
+.sz:focus-visible,.tab:focus-visible,.chip:focus-visible,.item:focus-visible,.back:focus-visible,input:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+.cover{background:linear-gradient(180deg,var(--deep) 0%,var(--deep2) 100%);color:#fff;padding:8px 0 30px}
+.cover .wrap{display:grid;grid-template-columns:minmax(0,1fr) 120px;gap:18px;align-items:end}
+.cover .kicker{font-size:15px;color:var(--glow)}
+.cover h1{font-size:clamp(26px,7vw,36px);margin:6px 0 10px}
+.cover .ref{font-size:15px;opacity:.85}
+.cover .open{margin-top:16px;display:inline-flex;align-items:center;min-height:44px;padding:0 20px;border-radius:24px;background:var(--glow);color:#2a1f45;font-weight:700;text-decoration:none;font-size:16px}
+.win{width:120px;height:170px}
+@media(max-width:420px){.cover .wrap{grid-template-columns:minmax(0,1fr) 84px}.win{width:84px;height:120px}}
+section.view{display:none}section.view.on{display:block}
+.band{padding:26px 0}
+.wrap.band{padding-left:max(18px,env(safe-area-inset-left));padding-right:max(18px,env(safe-area-inset-right))}
+.sec{font-size:21px;margin:0 0 14px}
+.sub{color:var(--mute);font-size:15px;margin:-8px 0 16px}
+.list{display:grid;gap:12px}
+.item{display:block;width:100%;text-align:start;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;text-decoration:none;color:inherit;cursor:pointer}
+.item .meta{font-size:14px;color:var(--mute);display:flex;flex-wrap:wrap;gap:4px 12px}
+.item h3{font-size:19px;margin:4px 0 4px}
+.item p{margin:6px 0 0;font-size:calc(var(--fs) - 1px)}
+.tag{display:inline-block;font-size:13px;padding:1px 10px;border-radius:12px;background:light-dark(#efe8f7,#30264a);color:var(--acc);white-space:nowrap}
+.tag.old{background:light-dark(#eee,#2a2a2a);color:var(--mute)}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:2px 0 14px;scrollbar-width:none}
+.chip{flex:none;min-height:40px;padding:0 16px;border-radius:20px;border:1px solid var(--line);background:var(--card);cursor:pointer;font-size:15px}
+.chip[aria-pressed=true]{background:var(--deep);border-color:var(--deep);color:#fff}
+.search{width:100%;min-height:48px;font-size:16px;padding:0 16px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--ink);margin-bottom:14px}
+.empty{background:var(--card);border:1px dashed var(--line);border-radius:14px;padding:26px 20px;text-align:center;color:var(--mute)}
+.empty h3{color:var(--ink);font-size:18px;margin-bottom:6px}
+article.read{background:var(--card);border-radius:16px;border:1px solid var(--line);padding:22px 20px}
+article.read h2{font-size:clamp(22px,6vw,28px);margin:6px 0 10px}
+article.read p{margin:0 0 1em}
+.back{display:inline-flex;align-items:center;min-height:44px;padding:0 4px;background:none;border:0;color:var(--acc);cursor:pointer;font-size:16px;margin-bottom:6px}
+.mon{font-size:15px;color:var(--mute);margin:18px 0 8px;font-weight:500}.mon:first-child{margin-top:0}
+.go{font-size:14px;color:var(--acc);margin-top:6px}
+.wk{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}.wk .row{display:grid;grid-template-columns:5.2em minmax(0,1fr);gap:12px;padding:12px 16px;border-top:1px solid var(--line)}.wk .row:first-child{border-top:0}.wk .row.cont{border-top:0;padding-top:0}.wk .d{font-weight:700;white-space:nowrap}.wk .t{color:var(--mute);font-size:15px}
+#lock{position:fixed;inset:0;z-index:20;background:linear-gradient(180deg,var(--deep),var(--deep2));color:#fff;display:flex;align-items:center;justify-content:center;padding:24px max(20px,env(safe-area-inset-left))}
+#lock form{width:100%;max-width:360px;text-align:center}
+#lock h1{font-size:28px;margin:18px 0 6px}#lock p{margin:0 0 22px;opacity:.85;font-size:15px}
+#pw{width:100%;min-height:54px;font-size:22px;text-align:center;letter-spacing:.2em;border-radius:12px;border:0;padding:0 14px;color:#241e2e;background:#fff}
+#pwBtn{width:100%;min-height:52px;margin-top:12px;border:0;border-radius:26px;background:var(--glow);color:#2a1f45;font-weight:700;font-size:17px;cursor:pointer}
+#pwBtn:disabled{opacity:.6}
+#pwMsg{min-height:1.6em;margin-top:12px;font-size:15px;color:#ffd3dc}
+body:not(.open) header.top,body:not(.open) .view,body:not(.open) nav.tabs{visibility:hidden}
+body.open #lock{display:none}
+.pv{margin:14px -20px 0;overflow-x:auto;background:light-dark(#efece6,#120f18)}
+.pv img{display:block;width:100%;height:auto;margin:0 0 6px;cursor:zoom-in}
+.pv.zoom img{width:240%;max-width:none;cursor:zoom-out}
+.hint{font-size:14px;color:var(--mute);margin-top:10px}
+.note{font-size:14px;color:var(--mute);margin-top:18px}
+nav.tabs{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(7,minmax(0,1fr));padding-bottom:env(safe-area-inset-bottom);z-index:5}
+.tab{background:none;border:0;min-height:64px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:10.5px;white-space:nowrap;letter-spacing:-.02em;color:var(--mute);cursor:pointer}
+.tab svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:1.7}
+.tab[aria-current=page]{color:var(--acc);font-weight:700}
+@media(prefers-reduced-motion:no-preference){.view.on{animation:fade .25s ease}@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}}
+</style>
+</head>
+<body>
+<div id="lock"><form id="lockForm" autocomplete="off">
+<svg width="56" height="80" viewBox="0 0 120 170" aria-hidden="true"><path d="M10 170V62a50 50 0 0 1 100 0v108z" fill="#1d1533"/><path d="M18 170V64a42 42 0 0 1 84 0v106z" fill="#f1d9a6"/><path d="M60 22v148M18 96h84" stroke="#1d1533" stroke-width="5"/></svg>
+<h1>横浜中央教会</h1><p>教会員用のページです。<br>パスワードを入れてください。</p>
+<input id="pw" type="password" inputmode="numeric" aria-label="パスワード" autocomplete="current-password">
+<button id="pwBtn" type="submit">開く</button>
+<div id="pwMsg" role="alert"></div>
+<p style="margin-top:18px;font-size:13px;opacity:.7">一度開くと、このスマホでは次から入力不要です</p>
+</form></div>
+<header class="top"><div class="wrap"><div class="brand">横浜中央教会</div><button class="sz" id="sz" aria-pressed="false">文字を大きく</button></div></header>
+
+<section class="view" id="v-home">
+  <div class="cover"><div class="wrap">
+    <div>
+      <div class="kicker" id="coverKicker">最新の説教</div>
+      <h1 id="coverTitle"></h1>
+      <div class="ref" id="coverRef"></div>
+      <a class="open" id="coverOpen" href="#">要約を読む</a>
+    </div>
+    <svg class="win" viewBox="0 0 120 170" aria-hidden="true">
+      <defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f1d9a6" stop-opacity=".95"/><stop offset="1" stop-color="#c9a46a" stop-opacity=".55"/></linearGradient></defs>
+      <path d="M10 170V62a50 50 0 0 1 100 0v108z" fill="#1d1533"/>
+      <path d="M18 170V64a42 42 0 0 1 84 0v106z" fill="url(#g)"/>
+      <path d="M60 22v148M18 96h84" stroke="#1d1533" stroke-width="5"/>
+      <path d="M60 104c-7 9-7 18 0 22 7-4 7-13 0-22z" fill="#fff" opacity=".9"/>
+      <rect x="54" y="126" width="12" height="44" fill="#fff" opacity=".85"/>
+    </svg>
+  </div></div>
+  <div class="wrap">
+    <div class="band"><h2 class="sec">今週の教会の予定</h2><p class="sub" id="weekSub"></p><div id="weekList"></div></div>
+  </div>
+</section>
+
+<section class="view" id="v-bulletin"><div class="wrap band"><h2 class="sec">週報</h2><p class="sub">タップすると週報を見られます</p><div id="bulletinList"></div></div></section>
+<section class="view" id="v-monthly"><div class="wrap band"><h2 class="sec">月間予定表</h2><p class="sub">タップすると予定表を見られます</p><div id="monthlyList"></div></div></section>
+
+<section class="view" id="v-geppo"><div class="wrap band"><h2 class="sec">月報</h2><p class="sub">タップすると月報を見られます</p><div id="geppoList"></div></div></section>
+
+<section class="view" id="v-sermons"><div class="wrap band">
+  <h2 class="sec">説教要約</h2><p class="sub">主日礼拝の説教の要約です</p>
+  <input class="search" id="q" type="search" placeholder="題や聖書箇所で探す" aria-label="説教を探す">
+  <div class="list" id="sermonList"></div>
+</div></section>
+
+<section class="view" id="v-handouts"><div class="wrap band">
+  <h2 class="sec">配布物・掲示物</h2><p class="sub">新しく届いたものが上に並びます。タップすると中身を見られます</p>
+  <div class="chips" id="chips" role="group" aria-label="カテゴリー"></div>
+  <div class="list" id="handoutList"></div>
+</div></section>
+
+<section class="view" id="v-cs"><div class="wrap band">
+  <h2 class="sec">教会学校</h2><p class="sub">カリキュラムや行事のお知らせです</p>
+  <div class="chips" id="csChips" role="group" aria-label="種類"></div>
+  <div class="list" id="csList"></div>
+</div></section>
+
+<section class="view" id="v-read"><div class="wrap band"><button class="back" id="back">‹ 一覧へ戻る</button><article class="read" id="readBody"></article></div></section>
+
+<nav class="tabs" aria-label="メニュー">
+  <button class="tab" data-v="home"><svg viewBox="0 0 24 24"><path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z"/></svg>ホーム</button>
+  <button class="tab" data-v="bulletin"><svg viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6z M14 3v5h5 M9 12h7 M9 16h7"/></svg>週報</button>
+  <button class="tab" data-v="monthly"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16 M9 3v4 M15 3v4"/></svg>予定表</button>
+  <button class="tab" data-v="geppo"><svg viewBox="0 0 24 24"><path d="M5 4h11l3 3v13H5z M8 9h8 M8 13h8 M8 17h5"/></svg>月報</button>
+  <button class="tab" data-v="sermons"><svg viewBox="0 0 24 24"><path d="M4 5c3-1 6-1 8 1 2-2 5-2 8-1v14c-3-1-6-1-8 1-2-2-5-2-8-1z M12 6v14"/></svg>説教</button>
+  <button class="tab" data-v="handouts"><svg viewBox="0 0 24 24"><path d="M4 7h16v13H4z M8 7V4h8v3 M4 12h16"/></svg>配布物</button>
+  <button class="tab" data-v="cs"><svg viewBox="0 0 24 24"><path d="M12 4l9 4-9 4-9-4z M7 10v5c3 2 7 2 10 0v-5"/></svg>教会学校</button>
+</nav>
+
+<script>
+{
+let KEY=null,CS=[],GEPPO=[],NOTION,BULLETINS,MONTH_PAGE,MONTHLIES,WEEK,SERMONS,HANDOUTS;
+const ENC="__ENC__";
+const CATS=["すべて","行事案内","声明・お知らせ","機関紙・通信","募集・献金","その他"];
+
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const W="日月火水木金土";
+const jd=d=>{if(!d)return"";const t=new Date(d+"T00:00:00");return `${t.getFullYear()}年${t.getMonth()+1}月${t.getDate()}日（${W[t.getDay()]}）`};
+const today=new Date();today.setHours(0,0,0,0);
+const ymd=x=>`${x.getFullYear()}-${String(x.getMonth()+1).padStart(2,"0")}-${String(x.getDate()).padStart(2,"0")}`;
+const T=ymd(today);
+let cat="すべて",lastList="home";
+
+const sermonCard=s=>`<a class="item" href="#${s.id}"><div class="meta"><span>${esc(jd(s.date))}</span><span>${esc(s.ref)}</span></div><h3>${esc(s.title)}</h3></a>`;
+const expired=h=>h.until&&h.until<T;
+const ext=n=>`href="${NOTION}${n}" target="_blank" rel="noopener"`;
+const handCard=h=>`<a class="item" ${lk(h,ext(h.n))}><div class="meta"><span class="tag${expired(h)?" old":""}">${esc(expired(h)?"終了":h.cat)}</span>${h.date?`<span>${esc(jd(h.date))}</span>`:""}</div><h3>${esc(h.name)}</h3>${h.from?`<div class="meta">${esc(h.from)}</div>`:""}<div class="go">${h.img?"見る ›":"Notionで開く ›"}</div></a>`;
+const emptyBox=(t,m)=>`<div class="empty"><h3>${esc(t)}</h3>${esc(m)}</div>`;
+const lk=(o,fb)=>o.img?`href="#doc-${o.img}"`:fb;
+const bCard=b=>`<a class="item" ${lk(b,ext(b.n))}><h3>${esc(jd(b.date))}の週報</h3>${b.note?`<div class="meta">${esc(b.note)}</div>`:""}<div class="go">${b.img?"週報を見る ›":"Notionで開く ›"}</div></a>`;
+const mCard=m=>`<a class="item" ${lk(m,ext(MONTH_PAGE))}><h3>${m.y}年${m.m}月の予定表</h3><div class="go">${m.img?"予定表を見る ›":"Notionで開く ›"}</div></a>`;
+
+function renderHome(){
+  const s=SERMONS[0];
+  $("#coverKicker").textContent=`最新の説教　${jd(s.date)}`;
+  $("#coverTitle").textContent=s.title;
+  $("#coverRef").textContent=`${s.ref}　${s.by}`;
+  $("#coverOpen").href="#"+s.id;
+  const wb=BULLETINS.find(b=>b.date===WEEK.from);
+  $("#weekSub").textContent=`${jd(WEEK.from)}の週報より`;
+  $("#weekList").innerHTML=WEEK.items.length?`<div class="wk">${WEEK.items.map(i=>`<div class="row${i.day?"":" cont"}"><div class="d">${esc(i.day)}</div><div><div>${esc(i.what)}</div>${i.note?`<div class="t">${esc(i.note)}</div>`:""}</div></div>`).join("")}</div>`:emptyBox("今週の予定は準備中です","週報の報告欄から載せます");
+}
+function renderSermons(){
+  const q=$("#q").value.trim();
+  const r=SERMONS.filter(s=>!q||(s.title+s.ref+s.body.join("")).includes(q));
+  $("#sermonList").innerHTML=r.length?r.map(sermonCard).join(""):emptyBox("見つかりませんでした","別のことばで探してみてください");
+}
+function renderHandouts(){
+  $("#chips").innerHTML=CATS.map(c=>`<button class="chip" data-c="${esc(c)}" aria-pressed="${c===cat}">${esc(c)}</button>`).join("");
+  const r=HANDOUTS.filter(h=>cat==="すべて"||h.cat===cat).sort((a,b)=>(expired(a)-expired(b))||b.reg.localeCompare(a.reg));
+  $("#handoutList").innerHTML=r.length?r.map(handCard).join(""):emptyBox("まだありません","");
+}
+let csCat="すべて";
+const CSCATS=["すべて","カリキュラム","行事・チラシ","その他"];
+const csCard=c=>`<a class="item" ${lk(c,c.n?ext(c.n):'href="#cs"')}><div class="meta"><span class="tag">${esc(c.cat)}</span>${c.date?`<span>${esc(jd(c.date))}</span>`:""}</div><h3>${esc(c.name)}</h3>${c.img?'<div class="go">見る ›</div>':""}</a>`;
+function renderCS(){
+  $("#csChips").innerHTML=CSCATS.map(c=>`<button class="chip" data-c="${esc(c)}" aria-pressed="${c===csCat}">${esc(c)}</button>`).join("");
+  const r=CS.filter(c=>csCat==="すべて"||c.cat===csCat).sort((a,b)=>(b.date||"").localeCompare(a.date||""));
+  $("#csList").innerHTML=r.length?r.map(csCard).join(""):emptyBox("まだ載っていません","カリキュラムや行事のチラシが届くと、ここに並びます");
+}
+function renderDocs(){
+  const g={};BULLETINS.forEach(b=>{const k=b.date.slice(0,7);(g[k]=g[k]||[]).push(b)});
+  $("#bulletinList").innerHTML=Object.keys(g).map(k=>`<div class="mon">${+k.slice(0,4)}年${+k.slice(5)}月</div><div class="list">${g[k].map(bCard).join("")}</div>`).join("");
+  $("#geppoList").innerHTML=GEPPO.length?`<div class="list">${GEPPO.map(g=>`<a class="item" href="#doc-${g.img}"><h3>${g.y}年${g.m}月号</h3><div class="go">月報を見る ›</div></a>`).join("")}</div>`:emptyBox("月報はまだ載っていません","");
+  $("#monthlyList").innerHTML=`<div class="list">${MONTHLIES.map(mCard).join("")}</div>`;
+}
+const paras=a=>a.map(p=>`<p>${esc(p)}</p>`).join("");
+function openRead(id){
+  let html="",from="home";
+  const s=SERMONS.find(x=>x.id===id);
+  if(s){from="sermons";html=`<div class="meta" style="color:var(--mute);font-size:15px">${esc(jd(s.date))}　${esc(s.by)}</div><h2>${esc(s.title)}</h2><p style="color:var(--acc);font-weight:500">${esc(s.ref)}</p>${s.lead?`<p style="color:var(--mute)">${esc(s.lead)}</p>`:""}${paras(s.body)}`}
+  else return false;
+  lastList=from;$("#readBody").innerHTML=html;show("read",from);return true;
+}
+async function openDoc(id){
+  const pools=[["bulletin",BULLETINS],["monthly",MONTHLIES],["handouts",HANDOUTS],["cs",CS],["geppo",GEPPO]];
+  let o=null,from="home";for(const [k,a] of pools){const f=a.find(x=>x.img===id);if(f){o=f;from=k;break}}
+  if(!o){show("home");return}
+  const title=from==="bulletin"?`${jd(o.date)}の週報`:from==="monthly"?`${o.y}年${o.m}月の予定表`:from==="geppo"?`月報 ${o.y}年${o.m}月号`:o.name;
+  lastList=from;
+  $("#readBody").innerHTML=`<h2>${esc(title)}</h2><div class="hint">読み込んでいます</div><div class="pv" id="pv"></div>`;
+  show("read",from);
+  try{
+    const r=await fetch(`files/${encodeURIComponent(id)}.json`);if(!r.ok)throw 0;
+    const j=await r.json();
+    const pt=await crypto.subtle.decrypt({name:"AES-GCM",iv:b64(j.iv)},KEY,b64(j.ct));
+    const imgs=JSON.parse(new TextDecoder().decode(pt));
+    const pv=$("#pv");if(!pv)return;
+    pv.innerHTML=imgs.map((x,i)=>`<img alt="${esc(title)} ${i+1}ページ" src="data:image/jpeg;base64,${x}">`).join("");
+    pv.addEventListener("click",()=>pv.classList.toggle("zoom"));
+    $("#readBody .hint").textContent="画像をタップすると拡大します。もう一度タップで元に戻ります";
+  }catch(_){const h=$("#readBody .hint");if(h)h.textContent="読み込めませんでした。通信環境を確かめて、もう一度開いてください"}
+}
+function show(v,tabFor){
+  document.querySelectorAll(".view").forEach(e=>e.classList.toggle("on",e.id==="v-"+v));
+  const t=tabFor||v;
+  document.querySelectorAll(".tab").forEach(b=>b.dataset.v===t?b.setAttribute("aria-current","page"):b.removeAttribute("aria-current"));
+  window.scrollTo(0,0);
+}
+function route(){
+  if(!SERMONS)return;
+  const h=location.hash.slice(1)||"home";
+  if(["home","bulletin","monthly","geppo","sermons","handouts","cs"].includes(h)){show(h);return}
+  if(h.startsWith("doc-")){openDoc(h.slice(4));return}
+  if(!openRead(h))show("home");
+}
+document.querySelectorAll(".tab").forEach(b=>b.addEventListener("click",()=>{location.hash=b.dataset.v}));
+$("#back").addEventListener("click",()=>{location.hash=lastList});
+$("#q").addEventListener("input",renderSermons);
+$("#csChips").addEventListener("click",e=>{const c=e.target.closest(".chip");if(!c)return;csCat=c.dataset.c;renderCS()});
+$("#chips").addEventListener("click",e=>{const c=e.target.closest(".chip");if(!c)return;cat=c.dataset.c;renderHandouts()});
+const sz=$("#sz");
+const setBig=on=>{document.documentElement.classList.toggle("big",on);sz.setAttribute("aria-pressed",on);sz.textContent=on?"文字をもとに":"文字を大きく";try{localStorage.setItem("big",on?"1":"0")}catch(e){}};
+sz.addEventListener("click",()=>setBig(!document.documentElement.classList.contains("big")));
+try{if(localStorage.getItem("big")==="1")setBig(true)}catch(e){}
+window.addEventListener("hashchange",route);
+const b64=t=>Uint8Array.from(atob(t),c=>c.charCodeAt(0));
+const raw=b64(ENC),salt=raw.slice(0,16),iv=raw.slice(16,28),ct=raw.slice(28);
+const KEYNAME="ycc-key";
+async function derive(pw){const base=await crypto.subtle.importKey("raw",new TextEncoder().encode(pw),"PBKDF2",false,["deriveKey"]);return crypto.subtle.deriveKey({name:"PBKDF2",salt,iterations:600000,hash:"SHA-256"},base,{name:"AES-GCM",length:256},true,["decrypt"])}
+async function tryKey(key){const pt=await crypto.subtle.decrypt({name:"AES-GCM",iv},key,ct);return JSON.parse(new TextDecoder().decode(pt))}
+function boot(d,key){KEY=key;CS=d.CS||[];GEPPO=d.GEPPO||[];({NOTION,BULLETINS,MONTH_PAGE,MONTHLIES,WEEK,SERMONS,HANDOUTS}=d);renderHome();renderSermons();renderHandouts();renderDocs();renderCS();document.body.classList.add("open");route()}
+$("#lockForm").addEventListener("submit",async e=>{
+  e.preventDefault();const pw=$("#pw").value.trim();if(!pw)return;
+  const btn=$("#pwBtn");btn.disabled=true;btn.textContent="確認しています";$("#pwMsg").textContent="";
+  try{const key=await derive(pw);const d=await tryKey(key);
+    try{const j=await crypto.subtle.exportKey("raw",key);localStorage.setItem(KEYNAME,btoa(String.fromCharCode(...new Uint8Array(j))))}catch(_){}
+    boot(d,key)}
+  catch(_){$("#pwMsg").textContent="パスワードが違います";btn.disabled=false;btn.textContent="開く";$("#pw").select()}
+});
+(async()=>{let saved=null;try{saved=localStorage.getItem(KEYNAME)}catch(_){}
+  if(saved){try{const key=await crypto.subtle.importKey("raw",b64(saved),"AES-GCM",false,["decrypt"]);boot(await tryKey(key),key);return}catch(_){try{localStorage.removeItem(KEYNAME)}catch(__){}}}
+  $("#pw").focus()})();
+}
+</script>
+</body>
+</html>
