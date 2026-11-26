@@ -29,14 +29,13 @@ header.top .wrap{display:flex;align-items:center;justify-content:space-between;g
 .brand{font-family:"Noto Serif JP",serif;font-size:19px;font-weight:700;letter-spacing:.04em}
 .sz{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);border-radius:22px;min-height:44px;padding:0 16px;font-size:15px;cursor:pointer;color:#fff}
 .sz:focus-visible,.tab:focus-visible,.chip:focus-visible,.item:focus-visible,.back:focus-visible,input:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
-.cover{background:linear-gradient(180deg,var(--deep) 0%,var(--deep2) 100%);color:#fff;padding:8px 0 30px}
-.cover .wrap{display:grid;grid-template-columns:minmax(0,1fr) 120px;gap:18px;align-items:end}
+.cover{background:linear-gradient(180deg,rgba(42,31,69,.35) 0%,rgba(42,31,69,.78) 55%,rgba(42,31,69,.96) 100%),url(cover.jpg) center 30%/cover no-repeat;color:#fff;padding:clamp(120px,32vw,200px) 0 30px}
+.cover .wrap{display:block}
 .cover .kicker{font-size:15px;color:var(--glow)}
-.cover h1{font-size:clamp(26px,7vw,36px);margin:6px 0 10px}
+.cover h1{text-shadow:0 1px 12px rgba(0,0,0,.35);font-size:clamp(26px,7vw,36px);margin:6px 0 10px}
 .cover .ref{font-size:15px;opacity:.85}
 .cover .open{margin-top:16px;display:inline-flex;align-items:center;min-height:44px;padding:0 20px;border-radius:24px;background:var(--glow);color:#2a1f45;font-weight:700;text-decoration:none;font-size:16px}
-.win{width:120px;height:170px}
-@media(max-width:420px){.cover .wrap{grid-template-columns:minmax(0,1fr) 84px}.win{width:84px;height:120px}}
+@media(max-width:420px){.cover .wrap{grid-template-columns:minmax(0,1fr) 84px}}
 section.view{display:none}section.view.on{display:block}
 .band{padding:26px 0}
 .wrap.band{padding-left:max(18px,env(safe-area-inset-left));padding-right:max(18px,env(safe-area-inset-right))}
@@ -102,14 +101,7 @@ nav.tabs{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-to
       <div class="ref" id="coverRef"></div>
       <a class="open" id="coverOpen" href="#">要約を読む</a>
     </div>
-    <svg class="win" viewBox="0 0 120 170" aria-hidden="true">
-      <defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f1d9a6" stop-opacity=".95"/><stop offset="1" stop-color="#c9a46a" stop-opacity=".55"/></linearGradient></defs>
-      <path d="M10 170V62a50 50 0 0 1 100 0v108z" fill="#1d1533"/>
-      <path d="M18 170V64a42 42 0 0 1 84 0v106z" fill="url(#g)"/>
-      <path d="M60 22v148M18 96h84" stroke="#1d1533" stroke-width="5"/>
-      <path d="M60 104c-7 9-7 18 0 22 7-4 7-13 0-22z" fill="#fff" opacity=".9"/>
-      <rect x="54" y="126" width="12" height="44" fill="#fff" opacity=".85"/>
-    </svg>
+    
   </div></div>
   <div class="wrap">
     <div class="band"><h2 class="sec">今週の教会の予定</h2><p class="sub" id="weekSub"></p><div id="weekList"></div></div>
