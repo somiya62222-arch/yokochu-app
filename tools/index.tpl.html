@@ -146,7 +146,7 @@ nav.tabs{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-to
 
 <script>
 {
-let KEY=null,CS=[],GEPPO=[],NOTION,BULLETINS,MONTH_PAGE,MONTHLIES,WEEK,SERMONS,HANDOUTS;
+let KEY=null,CS=[],GEPPO=[],BULLETINS,MONTHLIES,WEEK,SERMONS,HANDOUTS;
 const ENC="__ENC__";
 const CATS=["すべて","行事案内","声明・お知らせ","機関紙・通信","募集・献金","その他"];
 
@@ -161,12 +161,11 @@ let cat="すべて",lastList="home";
 
 const sermonCard=s=>`<a class="item" href="#${s.id}"><div class="meta"><span>${esc(jd(s.date))}</span><span>${esc(s.ref)}</span></div><h3>${esc(s.title)}</h3></a>`;
 const expired=h=>h.until&&h.until<T;
-const ext=n=>`href="${NOTION}${n}" target="_blank" rel="noopener"`;
-const handCard=h=>`<a class="item" ${lk(h,ext(h.n))}><div class="meta"><span class="tag${expired(h)?" old":""}">${esc(expired(h)?"終了":h.cat)}</span>${h.date?`<span>${esc(jd(h.date))}</span>`:""}</div><h3>${esc(h.name)}</h3>${h.from?`<div class="meta">${esc(h.from)}</div>`:""}<div class="go">${h.img?"見る ›":"Notionで開く ›"}</div></a>`;
+const handCard=h=>`<a class="item" ${lk(h)}><div class="meta"><span class="tag${expired(h)?" old":""}">${esc(expired(h)?"終了":h.cat)}</span>${h.date?`<span>${esc(jd(h.date))}</span>`:""}</div><h3>${esc(h.name)}</h3>${h.from?`<div class="meta">${esc(h.from)}</div>`:""}<div class="go">見る ›</div></a>`;
 const emptyBox=(t,m)=>`<div class="empty"><h3>${esc(t)}</h3>${esc(m)}</div>`;
-const lk=(o,fb)=>o.img?`href="#doc-${o.img}"`:fb;
-const bCard=b=>`<a class="item" ${lk(b,ext(b.n))}><h3>${esc(jd(b.date))}の週報</h3>${b.note?`<div class="meta">${esc(b.note)}</div>`:""}<div class="go">${b.img?"週報を見る ›":"Notionで開く ›"}</div></a>`;
-const mCard=m=>`<a class="item" ${lk(m,ext(MONTH_PAGE))}><h3>${m.y}年${m.m}月の予定表</h3><div class="go">${m.img?"予定表を見る ›":"Notionで開く ›"}</div></a>`;
+const lk=o=>o.img?`href="#doc-${o.img}"`:"";
+const bCard=b=>`<a class="item" ${lk(b)}><h3>${esc(jd(b.date))}の週報</h3>${b.note?`<div class="meta">${esc(b.note)}</div>`:""}<div class="go">週報を見る ›</div></a>`;
+const mCard=m=>`<a class="item" ${lk(m)}><h3>${m.y}年${m.m}月の予定表</h3><div class="go">予定表を見る ›</div></a>`;
 
 function renderHome(){
   const s=SERMONS[0];
@@ -190,7 +189,7 @@ function renderHandouts(){
 }
 let csCat="すべて";
 const CSCATS=["すべて","カリキュラム","行事・チラシ","その他"];
-const csCard=c=>`<a class="item" ${lk(c,c.n?ext(c.n):'href="#cs"')}><div class="meta"><span class="tag">${esc(c.cat)}</span>${c.date?`<span>${esc(jd(c.date))}</span>`:""}</div><h3>${esc(c.name)}</h3>${c.img?'<div class="go">見る ›</div>':""}</a>`;
+const csCard=c=>`<a class="item" ${lk(c)}><div class="meta"><span class="tag">${esc(c.cat)}</span>${c.date?`<span>${esc(jd(c.date))}</span>`:""}</div><h3>${esc(c.name)}</h3>${c.img?'<div class="go">見る ›</div>':""}</a>`;
 function renderCS(){
   $("#csChips").innerHTML=CSCATS.map(c=>`<button class="chip" data-c="${esc(c)}" aria-pressed="${c===csCat}">${esc(c)}</button>`).join("");
   const r=CS.filter(c=>csCat==="すべて"||c.cat===csCat).sort((a,b)=>(b.date||"").localeCompare(a.date||""));
@@ -257,7 +256,7 @@ const raw=b64(ENC),salt=raw.slice(0,16),iv=raw.slice(16,28),ct=raw.slice(28);
 const KEYNAME="ycc-key";
 async function derive(pw){const base=await crypto.subtle.importKey("raw",new TextEncoder().encode(pw),"PBKDF2",false,["deriveKey"]);return crypto.subtle.deriveKey({name:"PBKDF2",salt,iterations:600000,hash:"SHA-256"},base,{name:"AES-GCM",length:256},true,["decrypt"])}
 async function tryKey(key){const pt=await crypto.subtle.decrypt({name:"AES-GCM",iv},key,ct);return JSON.parse(new TextDecoder().decode(pt))}
-function boot(d,key){KEY=key;CS=d.CS||[];GEPPO=d.GEPPO||[];({NOTION,BULLETINS,MONTH_PAGE,MONTHLIES,WEEK,SERMONS,HANDOUTS}=d);renderHome();renderSermons();renderHandouts();renderDocs();renderCS();document.body.classList.add("open");route()}
+function boot(d,key){KEY=key;CS=d.CS||[];GEPPO=d.GEPPO||[];({BULLETINS,MONTHLIES,WEEK,SERMONS,HANDOUTS}=d);renderHome();renderSermons();renderHandouts();renderDocs();renderCS();document.body.classList.add("open");route()}
 $("#lockForm").addEventListener("submit",async e=>{
   e.preventDefault();const pw=$("#pw").value.trim();if(!pw)return;
   const btn=$("#pwBtn");btn.disabled=true;btn.textContent="確認しています";$("#pwMsg").textContent="";
