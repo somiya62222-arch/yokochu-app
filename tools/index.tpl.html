@@ -227,7 +227,7 @@ function renderCS(){
   const r=CS.filter(c=>csCat==="すべて"||c.cat===csCat).sort((a,b)=>(b.date||"").localeCompare(a.date||""));
   $("#csList").innerHTML=r.length?r.map(csCard).join(""):emptyBox("まだ載っていません","カリキュラムや行事のチラシが届くと、ここに並びます");
 }
-const docCard=o=>`<a class="item" ${lk(o)}>${o.date?`<div class="meta"><span>${esc(jd(o.date))}</span></div>`:""}<h3>${esc(o.name)}</h3>${o.img?'<div class="go">見る ›</div>':""}</a>`;
+const docCard=o=>o.url?`<a class="item" href="${esc(o.url)}" target="_blank" rel="noopener">${o.date?`<div class="meta"><span>${esc(jd(o.date))}</span></div>`:""}<h3>${esc(o.name)}</h3><div class="go">ひらく ›</div></a>`:`<a class="item" ${lk(o)}>${o.date?`<div class="meta"><span>${esc(jd(o.date))}</span></div>`:""}<h3>${esc(o.name)}</h3>${o.img?'<div class="go">見る ›</div>':""}</a>`;
 function renderShiryo(){
   const g=[];SHIRYO.forEach(o=>{let x=g.find(y=>y.k===(o.group||""));if(!x)g.push(x={k:o.group||"",a:[]});x.a.push(o)});
   $("#shiryoList").innerHTML=SHIRYO.length?g.map(x=>`${x.k?`<div class="mon">${esc(x.k)}</div>`:""}<div class="list">${x.a.map(docCard).join("")}</div>`).join(""):emptyBox("まだ載っていません","");
