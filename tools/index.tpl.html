@@ -143,6 +143,7 @@ nav.tabs{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-to
 
 <section class="view" id="v-other"><div class="wrap band">
   <h2 class="sec">その他</h2>
+  <div class="chips" role="group" aria-label="種類" id="otherChips"></div>
   <div id="otherList"></div>
 </div></section>
 
@@ -227,11 +228,18 @@ function renderCS(){
   const r=CS.filter(c=>csCat==="すべて"||c.cat===csCat).sort((a,b)=>(b.date||"").localeCompare(a.date||""));
   $("#csList").innerHTML=r.length?r.map(csCard).join(""):emptyBox("まだ載っていません","カリキュラムや行事のチラシが届くと、ここに並びます");
 }
+const OKINDS=()=>{const k=["あさのことば","ガチコミ"];OTHER.forEach(o=>{const x=o.kind||"その他";if(!k.includes(x))k.push(x)});return k.filter(x=>OTHER.some(o=>(o.kind||"その他")===x))};
+let otherKind=null;
+function renderOther(){const ks=OKINDS();if(!ks.includes(otherKind))otherKind=ks[0];
+  $("#otherChips").innerHTML=ks.length>1?ks.map(k=>`<button class="chip" data-k="${esc(k)}" aria-pressed="${k===otherKind}">${esc(k)}</button>`).join(""):"";
+  $("#otherChips").querySelectorAll(".chip").forEach(b=>b.addEventListener("click",()=>{otherKind=b.dataset.k;renderOther()}));
+  const L=OTHER.filter(o=>(o.kind||"その他")===otherKind);
+  $("#otherList").innerHTML=L.length?`<div class="list">${L.map(docCard).join("")}</div>`:emptyBox("まだ載っていません","");}
 const docCard=o=>o.links?`<a class="item" href="#${esc(o.id)}"><h3>${esc(o.name)}</h3><div class="go">ひらく ›</div></a>`:o.url?`<a class="item" href="${esc(o.url)}" target="_blank" rel="noopener">${o.date?`<div class="meta"><span>${esc(jd(o.date))}</span></div>`:""}<h3>${esc(o.name)}</h3><div class="go">ひらく ›</div></a>`:`<a class="item" ${lk(o)}>${o.date?`<div class="meta"><span>${esc(jd(o.date))}</span></div>`:""}<h3>${esc(o.name)}</h3>${o.img?'<div class="go">見る ›</div>':""}</a>`;
 function renderShiryo(){
   const g=[];SHIRYO.forEach(o=>{let x=g.find(y=>y.k===(o.group||""));if(!x)g.push(x={k:o.group||"",a:[]});x.a.push(o)});
   $("#shiryoList").innerHTML=SHIRYO.length?g.map(x=>`${x.k?`<div class="mon">${esc(x.k)}</div>`:""}<div class="list">${x.a.map(docCard).join("")}</div>`).join(""):emptyBox("まだ載っていません","");
-  $("#otherList").innerHTML=OTHER.length?`<div class="list">${OTHER.map(docCard).join("")}</div>`:emptyBox("まだ載っていません","");
+  renderOther();
 }
 function renderDocs(){
   const g={};BULLETINS.forEach(b=>{const k=b.date.slice(0,7);(g[k]=g[k]||[]).push(b)});
