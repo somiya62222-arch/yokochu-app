@@ -35,6 +35,9 @@ header.top .wrap{display:flex;align-items:center;justify-content:space-between;g
 .cover .kicker{font-size:15px;color:var(--glow)}
 .cover h1{font-size:clamp(26px,7vw,36px);margin:6px 0 10px}
 .cover .ref{font-size:15px;opacity:.85}
+.blinks{display:flex;flex-wrap:wrap;gap:4px 16px;margin-top:4px}
+.blink{display:inline-flex;align-items:center;min-height:44px;font-size:15px;color:var(--acc);text-decoration:underline;text-underline-offset:3px}
+.cover .blink{color:var(--glow)}
 .cover .open{margin-top:16px;display:inline-flex;align-items:center;min-height:44px;padding:0 20px;border-radius:24px;background:var(--glow);color:#2a1f45;font-weight:700;text-decoration:none;font-size:16px}
 @media(max-width:420px){.cover .wrap{grid-template-columns:minmax(0,1fr) 84px}}
 section.view{display:none}section.view.on{display:block}
@@ -100,6 +103,7 @@ nav.tabs{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-to
       <div class="kicker" id="coverKicker">最新の説教</div>
       <h1 id="coverTitle"></h1>
       <div class="ref" id="coverRef"></div>
+      <div class="blinks" id="coverBible"></div>
       <a class="open" id="coverOpen" href="#">要約を読む</a>
     </div>
     
@@ -148,6 +152,23 @@ nav.tabs{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-to
 {
 let KEY=null,CS=[],GEPPO=[],BULLETINS,MONTHLIES,WEEK,SERMONS,HANDOUTS;
 const ENC="__ENC__";
+const BOOKS=[["創世記","GEN"],["出エジプト記","EXO"],["レビ記","LEV"],["民数記","NUM"],["申命記","DEU"],["ヨシュア記","JOS"],["士師記","JDG"],["ルツ記","RUT"],["サムエル記上","1SA"],["サムエル記下","2SA"],["列王記上","1KI"],["列王記下","2KI"],["歴代誌上","1CH"],["歴代誌下","2CH"],["エズラ記","EZR"],["ネヘミヤ記","NEH"],["エステル記","EST"],["ヨブ記","JOB"],["詩編","PSA"],["詩篇","PSA"],["箴言","PRO"],["コヘレトの言葉","ECC"],["雅歌","SNG"],["イザヤ書","ISA"],["エレミヤ書","JER"],["哀歌","LAM"],["エゼキエル書","EZK"],["ダニエル書","DAN"],["ホセア書","HOS"],["ヨエル書","JOL"],["アモス書","AMO"],["オバデヤ書","OBA"],["ヨナ書","JON"],["ミカ書","MIC"],["ナホム書","NAM"],["ハバクク書","HAB"],["ゼファニヤ書","ZEP"],["ハガイ書","HAG"],["ゼカリヤ書","ZEC"],["マラキ書","MAL"],["マタイによる福音書","MAT"],["マルコによる福音書","MRK"],["ルカによる福音書","LUK"],["ヨハネによる福音書","JHN"],["使徒言行録","ACT"],["ローマの信徒への手紙","ROM"],["コリントの信徒への手紙一","1CO"],["コリントの信徒への手紙二","2CO"],["ガラテヤの信徒への手紙","GAL"],["エフェソの信徒への手紙","EPH"],["フィリピの信徒への手紙","PHP"],["コロサイの信徒への手紙","COL"],["テサロニケの信徒への手紙一","1TH"],["テサロニケの信徒への手紙二","2TH"],["テモテへの手紙一","1TI"],["テモテへの手紙二","2TI"],["テトスへの手紙","TIT"],["フィレモンへの手紙","PHM"],["ヘブライ人への手紙","HEB"],["ヘブライ書","HEB"],["ヤコブの手紙","JAS"],["ペトロの手紙一","1PE"],["ペトロの手紙二","2PE"],["ヨハネの手紙一","1JN"],["ヨハネの手紙二","2JN"],["ヨハネの手紙三","3JN"],["ユダの手紙","JUD"],["ヨハネの黙示録","REV"],["マタイ福音書","MAT"],["マルコ福音書","MRK"],["ルカ福音書","LUK"],["ヨハネ福音書","JHN"],["使徒","ACT"],["ローマ書","ROM"],["黙示録","REV"]].sort((a,b)=>b[0].length-a[0].length);
+const bibleLinks=ref=>{
+  const t=String(ref||"").replace(/[０-９]/g,c=>String.fromCharCode(c.charCodeAt(0)-0xFEE0)).replace(/\s/g,"");
+  const out=[];let book=null;
+  for(const seg of t.split(/[、，,；;・]/)){
+    let s=seg;const b=BOOKS.find(([n])=>s.startsWith(n));
+    if(b){book=b[1];s=s.slice(b[0].length)}
+    if(!book)continue;
+    const m=s.match(/^(\d+)(?:章|編|:)?(?:(\d+)節?)?(?:[〜～\-－–—]+(?:(\d+)(?:章|編|:))?(\d+)節?)?/);
+    if(!m)continue;
+    const [,c,v1,c2,v2]=m;let p=`${book}.${c}`;
+    if(v1&&!(c2&&c2!==c))p+=`.${v1}${v2&&+v2>+v1?`-${v2}`:""}`;
+    out.push({label:seg,url:`https://www.bible.com/ja/bible/1819/${p}.${encodeURIComponent("新共同訳")}`});
+  }
+  return out;
+};
+
 const CATS=["すべて","行事案内","声明・お知らせ","機関紙・通信","募集・献金","その他"];
 
 const $=s=>document.querySelector(s);
@@ -172,6 +193,7 @@ function renderHome(){
   $("#coverKicker").textContent=`最新の説教　${jd(s.date)}`;
   $("#coverTitle").textContent=s.title;
   $("#coverRef").textContent=`${s.ref}　${s.by}`;
+  $("#coverBible").innerHTML=bibleHtml(s.ref);
   $("#coverOpen").href="#"+s.id;
   const wb=BULLETINS.find(b=>b.date===WEEK.from);
   $("#weekSub").textContent=`${jd(WEEK.from)}の週報より`;
@@ -201,11 +223,12 @@ function renderDocs(){
   $("#geppoList").innerHTML=GEPPO.length?`<div class="list">${GEPPO.map(g=>`<a class="item" href="#doc-${g.img}"><h3>${g.y}年${g.m}月号</h3><div class="go">月報を見る ›</div></a>`).join("")}</div>`:emptyBox("月報はまだ載っていません","");
   $("#monthlyList").innerHTML=`<div class="list">${MONTHLIES.map(mCard).join("")}</div>`;
 }
+const bibleHtml=ref=>{const l=bibleLinks(ref);return l.map(x=>`<a class="blink" href="${esc(x.url)}" target="_blank" rel="noopener">${l.length>1?esc(x.label)+"を":""}bible.comで読む（新共同訳）</a>`).join("")};
 const paras=a=>a.map(p=>`<p>${esc(p)}</p>`).join("");
 function openRead(id){
   let html="",from="home";
   const s=SERMONS.find(x=>x.id===id);
-  if(s){from="sermons";html=`<div class="meta" style="color:var(--mute);font-size:15px">${esc(jd(s.date))}　${esc(s.by)}</div><h2>${esc(s.title)}</h2><p style="color:var(--acc);font-weight:500">${esc(s.ref)}</p>${s.lead?`<p style="color:var(--mute)">${esc(s.lead)}</p>`:""}${paras(s.body)}`}
+  if(s){from="sermons";html=`<div class="meta" style="color:var(--mute);font-size:15px">${esc(jd(s.date))}　${esc(s.by)}</div><h2>${esc(s.title)}</h2><p style="color:var(--acc);font-weight:500;margin-bottom:0">${esc(s.ref)}</p><div class="blinks" style="margin-bottom:1em">${bibleHtml(s.ref)}</div>${s.lead?`<p style="color:var(--mute)">${esc(s.lead)}</p>`:""}${paras(s.body)}`}
   else return false;
   lastList=from;$("#readBody").innerHTML=html;show("read",from);return true;
 }
