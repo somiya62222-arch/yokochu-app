@@ -113,10 +113,10 @@ nav.tabs{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-to
   </div>
 </section>
 
-<section class="view" id="v-bulletin"><div class="wrap band"><h2 class="sec">週報</h2><p class="sub">タップすると週報を見られます</p><div id="bulletinList"></div></div></section>
-<section class="view" id="v-monthly"><div class="wrap band"><h2 class="sec">月間予定表</h2><p class="sub">タップすると予定表を見られます</p><div id="monthlyList"></div></div></section>
+<section class="view" id="v-bulletin"><div class="wrap band"><h2 class="sec">週報など</h2><div class="chips" role="group" aria-label="種類"><button class="chip seg" data-go="bulletin" aria-pressed="true">週報</button><button class="chip seg" data-go="monthly" aria-pressed="false">予定表</button><button class="chip seg" data-go="geppo" aria-pressed="false">月報</button></div><p class="sub">タップすると週報を見られます</p><div id="bulletinList"></div></div></section>
+<section class="view" id="v-monthly"><div class="wrap band"><h2 class="sec">週報など</h2><div class="chips" role="group" aria-label="種類"><button class="chip seg" data-go="bulletin" aria-pressed="false">週報</button><button class="chip seg" data-go="monthly" aria-pressed="true">予定表</button><button class="chip seg" data-go="geppo" aria-pressed="false">月報</button></div><p class="sub">タップすると予定表を見られます</p><div id="monthlyList"></div></div></section>
 
-<section class="view" id="v-geppo"><div class="wrap band"><h2 class="sec">月報</h2><p class="sub">タップすると月報を見られます</p><div id="geppoList"></div></div></section>
+<section class="view" id="v-geppo"><div class="wrap band"><h2 class="sec">週報など</h2><div class="chips" role="group" aria-label="種類"><button class="chip seg" data-go="bulletin" aria-pressed="false">週報</button><button class="chip seg" data-go="monthly" aria-pressed="false">予定表</button><button class="chip seg" data-go="geppo" aria-pressed="true">月報</button></div><p class="sub">タップすると月報を見られます</p><div id="geppoList"></div></div></section>
 
 <section class="view" id="v-sermons"><div class="wrap band">
   <h2 class="sec">説教要約</h2><p class="sub">主日礼拝の説教の要約です</p>
@@ -136,21 +136,31 @@ nav.tabs{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-to
   <div class="list" id="csList"></div>
 </div></section>
 
+<section class="view" id="v-shiryo"><div class="wrap band">
+  <h2 class="sec">資料</h2><p class="sub">タップすると中身を見られます</p>
+  <div id="shiryoList"></div>
+</div></section>
+
+<section class="view" id="v-other"><div class="wrap band">
+  <h2 class="sec">その他</h2>
+  <div id="otherList"></div>
+</div></section>
+
 <section class="view" id="v-read"><div class="wrap band"><button class="back" id="back">‹ 一覧へ戻る</button><article class="read" id="readBody"></article></div></section>
 
 <nav class="tabs" aria-label="メニュー">
   <button class="tab" data-v="home"><svg viewBox="0 0 24 24"><path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z"/></svg>ホーム</button>
-  <button class="tab" data-v="bulletin"><svg viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6z M14 3v5h5 M9 12h7 M9 16h7"/></svg>週報</button>
-  <button class="tab" data-v="monthly"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16 M9 3v4 M15 3v4"/></svg>予定表</button>
-  <button class="tab" data-v="geppo"><svg viewBox="0 0 24 24"><path d="M5 4h11l3 3v13H5z M8 9h8 M8 13h8 M8 17h5"/></svg>月報</button>
+  <button class="tab" data-v="bulletin"><svg viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6z M14 3v5h5 M9 12h7 M9 16h7"/></svg>週報など</button>
   <button class="tab" data-v="sermons"><svg viewBox="0 0 24 24"><path d="M4 5c3-1 6-1 8 1 2-2 5-2 8-1v14c-3-1-6-1-8 1-2-2-5-2-8-1z M12 6v14"/></svg>説教</button>
   <button class="tab" data-v="handouts"><svg viewBox="0 0 24 24"><path d="M4 7h16v13H4z M8 7V4h8v3 M4 12h16"/></svg>配布物</button>
   <button class="tab" data-v="cs"><svg viewBox="0 0 24 24"><path d="M12 4l9 4-9 4-9-4z M7 10v5c3 2 7 2 10 0v-5"/></svg>教会学校</button>
+  <button class="tab" data-v="shiryo"><svg viewBox="0 0 24 24"><path d="M3 6h7l2 2h9v12H3z M3 10h18"/></svg>資料</button>
+  <button class="tab" data-v="other"><svg viewBox="0 0 24 24"><circle cx="6" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="18" cy="12" r="1.6"/></svg>その他</button>
 </nav>
 
 <script>
 {
-let KEY=null,CS=[],GEPPO=[],BULLETINS,MONTHLIES,WEEK,SERMONS,HANDOUTS;
+let KEY=null,CS=[],GEPPO=[],SHIRYO=[],OTHER=[],BULLETINS,MONTHLIES,WEEK,SERMONS,HANDOUTS;
 const ENC="__ENC__";
 const BOOKS=[["創世記","GEN"],["出エジプト記","EXO"],["レビ記","LEV"],["民数記","NUM"],["申命記","DEU"],["ヨシュア記","JOS"],["士師記","JDG"],["ルツ記","RUT"],["サムエル記上","1SA"],["サムエル記下","2SA"],["列王記上","1KI"],["列王記下","2KI"],["歴代誌上","1CH"],["歴代誌下","2CH"],["エズラ記","EZR"],["ネヘミヤ記","NEH"],["エステル記","EST"],["ヨブ記","JOB"],["詩編","PSA"],["詩篇","PSA"],["箴言","PRO"],["コヘレトの言葉","ECC"],["雅歌","SNG"],["イザヤ書","ISA"],["エレミヤ書","JER"],["哀歌","LAM"],["エゼキエル書","EZK"],["ダニエル書","DAN"],["ホセア書","HOS"],["ヨエル書","JOL"],["アモス書","AMO"],["オバデヤ書","OBA"],["ヨナ書","JON"],["ミカ書","MIC"],["ナホム書","NAM"],["ハバクク書","HAB"],["ゼファニヤ書","ZEP"],["ハガイ書","HAG"],["ゼカリヤ書","ZEC"],["マラキ書","MAL"],["マタイによる福音書","MAT"],["マルコによる福音書","MRK"],["ルカによる福音書","LUK"],["ヨハネによる福音書","JHN"],["使徒言行録","ACT"],["ローマの信徒への手紙","ROM"],["コリントの信徒への手紙一","1CO"],["コリントの信徒への手紙二","2CO"],["ガラテヤの信徒への手紙","GAL"],["エフェソの信徒への手紙","EPH"],["フィリピの信徒への手紙","PHP"],["コロサイの信徒への手紙","COL"],["テサロニケの信徒への手紙一","1TH"],["テサロニケの信徒への手紙二","2TH"],["テモテへの手紙一","1TI"],["テモテへの手紙二","2TI"],["テトスへの手紙","TIT"],["フィレモンへの手紙","PHM"],["ヘブライ人への手紙","HEB"],["ヘブライ書","HEB"],["ヤコブの手紙","JAS"],["ペトロの手紙一","1PE"],["ペトロの手紙二","2PE"],["ヨハネの手紙一","1JN"],["ヨハネの手紙二","2JN"],["ヨハネの手紙三","3JN"],["ユダの手紙","JUD"],["ヨハネの黙示録","REV"],["マタイ福音書","MAT"],["マルコ福音書","MRK"],["ルカ福音書","LUK"],["ヨハネ福音書","JHN"],["使徒","ACT"],["ローマ書","ROM"],["黙示録","REV"]].sort((a,b)=>b[0].length-a[0].length);
 const bibleLinks=ref=>{
@@ -217,6 +227,12 @@ function renderCS(){
   const r=CS.filter(c=>csCat==="すべて"||c.cat===csCat).sort((a,b)=>(b.date||"").localeCompare(a.date||""));
   $("#csList").innerHTML=r.length?r.map(csCard).join(""):emptyBox("まだ載っていません","カリキュラムや行事のチラシが届くと、ここに並びます");
 }
+const docCard=o=>`<a class="item" ${lk(o)}>${o.date?`<div class="meta"><span>${esc(jd(o.date))}</span></div>`:""}<h3>${esc(o.name)}</h3>${o.img?'<div class="go">見る ›</div>':""}</a>`;
+function renderShiryo(){
+  const g=[];SHIRYO.forEach(o=>{let x=g.find(y=>y.k===(o.group||""));if(!x)g.push(x={k:o.group||"",a:[]});x.a.push(o)});
+  $("#shiryoList").innerHTML=SHIRYO.length?g.map(x=>`${x.k?`<div class="mon">${esc(x.k)}</div>`:""}<div class="list">${x.a.map(docCard).join("")}</div>`).join(""):emptyBox("まだ載っていません","");
+  $("#otherList").innerHTML=OTHER.length?`<div class="list">${OTHER.map(docCard).join("")}</div>`:emptyBox("まだ載っていません","");
+}
 function renderDocs(){
   const g={};BULLETINS.forEach(b=>{const k=b.date.slice(0,7);(g[k]=g[k]||[]).push(b)});
   $("#bulletinList").innerHTML=Object.keys(g).map(k=>`<div class="mon">${+k.slice(0,4)}年${+k.slice(5)}月</div><div class="list">${g[k].map(bCard).join("")}</div>`).join("");
@@ -233,7 +249,7 @@ function openRead(id){
   lastList=from;$("#readBody").innerHTML=html;show("read",from);return true;
 }
 async function openDoc(id){
-  const pools=[["bulletin",BULLETINS],["monthly",MONTHLIES],["handouts",HANDOUTS],["cs",CS],["geppo",GEPPO]];
+  const pools=[["bulletin",BULLETINS],["monthly",MONTHLIES],["handouts",HANDOUTS],["cs",CS],["geppo",GEPPO],["shiryo",SHIRYO],["other",OTHER]];
   let o=null,from="home";for(const [k,a] of pools){const f=a.find(x=>x.img===id);if(f){o=f;from=k;break}}
   if(!o){show("home");return}
   const title=from==="bulletin"?`${jd(o.date)}の週報`:from==="monthly"?`${o.y}年${o.m}月の予定表`:from==="geppo"?`月報 ${o.y}年${o.m}月号`:o.name;
@@ -253,18 +269,19 @@ async function openDoc(id){
 }
 function show(v,tabFor){
   document.querySelectorAll(".view").forEach(e=>e.classList.toggle("on",e.id==="v-"+v));
-  const t=tabFor||v;
+  let t=tabFor||v;if(t==="monthly"||t==="geppo")t="bulletin";
   document.querySelectorAll(".tab").forEach(b=>b.dataset.v===t?b.setAttribute("aria-current","page"):b.removeAttribute("aria-current"));
   window.scrollTo(0,0);
 }
 function route(){
   if(!SERMONS)return;
   const h=location.hash.slice(1)||"home";
-  if(["home","bulletin","monthly","geppo","sermons","handouts","cs"].includes(h)){show(h);return}
+  if(["home","bulletin","monthly","geppo","sermons","handouts","cs","shiryo","other"].includes(h)){show(h);return}
   if(h.startsWith("doc-")){openDoc(h.slice(4));return}
   if(!openRead(h))show("home");
 }
 document.querySelectorAll(".tab").forEach(b=>b.addEventListener("click",()=>{location.hash=b.dataset.v}));
+document.querySelectorAll(".seg").forEach(b=>b.addEventListener("click",()=>{location.hash=b.dataset.go}));
 $("#back").addEventListener("click",()=>{location.hash=lastList});
 $("#q").addEventListener("input",renderSermons);
 $("#csChips").addEventListener("click",e=>{const c=e.target.closest(".chip");if(!c)return;csCat=c.dataset.c;renderCS()});
@@ -279,7 +296,7 @@ const raw=b64(ENC),salt=raw.slice(0,16),iv=raw.slice(16,28),ct=raw.slice(28);
 const KEYNAME="ycc-key";
 async function derive(pw){const base=await crypto.subtle.importKey("raw",new TextEncoder().encode(pw),"PBKDF2",false,["deriveKey"]);return crypto.subtle.deriveKey({name:"PBKDF2",salt,iterations:600000,hash:"SHA-256"},base,{name:"AES-GCM",length:256},true,["decrypt"])}
 async function tryKey(key){const pt=await crypto.subtle.decrypt({name:"AES-GCM",iv},key,ct);return JSON.parse(new TextDecoder().decode(pt))}
-function boot(d,key){KEY=key;CS=d.CS||[];GEPPO=d.GEPPO||[];({BULLETINS,MONTHLIES,WEEK,SERMONS,HANDOUTS}=d);renderHome();renderSermons();renderHandouts();renderDocs();renderCS();document.body.classList.add("open");route()}
+function boot(d,key){KEY=key;CS=d.CS||[];GEPPO=d.GEPPO||[];SHIRYO=d.SHIRYO||[];OTHER=d.OTHER||[];({BULLETINS,MONTHLIES,WEEK,SERMONS,HANDOUTS}=d);renderHome();renderSermons();renderHandouts();renderDocs();renderCS();renderShiryo();document.body.classList.add("open");route()}
 $("#lockForm").addEventListener("submit",async e=>{
   e.preventDefault();const pw=$("#pw").value.trim();if(!pw)return;
   const btn=$("#pwBtn");btn.disabled=true;btn.textContent="確認しています";$("#pwMsg").textContent="";
