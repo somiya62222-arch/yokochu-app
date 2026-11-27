@@ -109,6 +109,7 @@ nav.tabs{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-to
     
   </div></div>
   <div class="wrap">
+    <div class="band" id="pickBand" hidden><h2 class="sec">お知らせ</h2><div class="list" id="pickList"></div></div>
     <div class="band"><h2 class="sec">今週の教会の予定</h2><p class="sub" id="weekSub"></p><div id="weekList"></div></div>
   </div>
 </section>
@@ -161,7 +162,7 @@ nav.tabs{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-to
 
 <script>
 {
-let KEY=null,CS=[],GEPPO=[],SHIRYO=[],OTHER=[],BULLETINS,MONTHLIES,WEEK,SERMONS,HANDOUTS;
+let KEY=null,PICKUP=[],CS=[],GEPPO=[],SHIRYO=[],OTHER=[],BULLETINS,MONTHLIES,WEEK,SERMONS,HANDOUTS;
 const ENC="__ENC__";
 const BOOKS=[["創世記","GEN"],["出エジプト記","EXO"],["レビ記","LEV"],["民数記","NUM"],["申命記","DEU"],["ヨシュア記","JOS"],["士師記","JDG"],["ルツ記","RUT"],["サムエル記上","1SA"],["サムエル記下","2SA"],["列王記上","1KI"],["列王記下","2KI"],["歴代誌上","1CH"],["歴代誌下","2CH"],["エズラ記","EZR"],["ネヘミヤ記","NEH"],["エステル記","EST"],["ヨブ記","JOB"],["詩編","PSA"],["詩篇","PSA"],["箴言","PRO"],["コヘレトの言葉","ECC"],["雅歌","SNG"],["イザヤ書","ISA"],["エレミヤ書","JER"],["哀歌","LAM"],["エゼキエル書","EZK"],["ダニエル書","DAN"],["ホセア書","HOS"],["ヨエル書","JOL"],["アモス書","AMO"],["オバデヤ書","OBA"],["ヨナ書","JON"],["ミカ書","MIC"],["ナホム書","NAM"],["ハバクク書","HAB"],["ゼファニヤ書","ZEP"],["ハガイ書","HAG"],["ゼカリヤ書","ZEC"],["マラキ書","MAL"],["マタイによる福音書","MAT"],["マルコによる福音書","MRK"],["ルカによる福音書","LUK"],["ヨハネによる福音書","JHN"],["使徒言行録","ACT"],["ローマの信徒への手紙","ROM"],["コリントの信徒への手紙一","1CO"],["コリントの信徒への手紙二","2CO"],["ガラテヤの信徒への手紙","GAL"],["エフェソの信徒への手紙","EPH"],["フィリピの信徒への手紙","PHP"],["コロサイの信徒への手紙","COL"],["テサロニケの信徒への手紙一","1TH"],["テサロニケの信徒への手紙二","2TH"],["テモテへの手紙一","1TI"],["テモテへの手紙二","2TI"],["テトスへの手紙","TIT"],["フィレモンへの手紙","PHM"],["ヘブライ人への手紙","HEB"],["ヘブライ書","HEB"],["ヤコブの手紙","JAS"],["ペトロの手紙一","1PE"],["ペトロの手紙二","2PE"],["ヨハネの手紙一","1JN"],["ヨハネの手紙二","2JN"],["ヨハネの手紙三","3JN"],["ユダの手紙","JUD"],["ヨハネの黙示録","REV"],["マタイ福音書","MAT"],["マルコ福音書","MRK"],["ルカ福音書","LUK"],["ヨハネ福音書","JHN"],["使徒","ACT"],["ローマ書","ROM"],["黙示録","REV"]].sort((a,b)=>b[0].length-a[0].length);
 const bibleLinks=ref=>{
@@ -200,6 +201,7 @@ const bCard=b=>`<a class="item" ${lk(b)}><h3>${esc(jd(b.date))}の週報</h3>${b
 const mCard=m=>`<a class="item" ${lk(m)}><h3>${m.y}年${m.m}月の予定表</h3><div class="go">予定表を見る ›</div></a>`;
 
 function renderHome(){
+  const pk=PICKUP.filter(p=>p.img&&!expired(p));$("#pickBand").hidden=!pk.length;const pg=[];pk.forEach(p=>{let x=pg.find(y=>y.k===(p.group||"お知らせ"));if(!x)pg.push(x={k:p.group||"お知らせ",a:[]});x.a.push(p)});$("#pickBand").innerHTML=pg.map(x=>`<h2 class="sec">${esc(x.k)}</h2><div class="list" style="margin-bottom:8px">${x.a.map(p=>`<a class="item" ${lk(p)}><h3>${esc(p.name)}</h3><div class="go">見る ›</div></a>`).join("")}</div>`).join("");
   const s=SERMONS[0];
   $("#coverKicker").textContent=`最新の説教　${jd(s.date)}`;
   $("#coverTitle").textContent=s.title;
@@ -257,7 +259,7 @@ function openRead(id){
   lastList=from;$("#readBody").innerHTML=html;show("read",from);return true;
 }
 async function openDoc(id){
-  const pools=[["bulletin",BULLETINS],["monthly",MONTHLIES],["handouts",HANDOUTS],["cs",CS],["geppo",GEPPO],["shiryo",SHIRYO],["other",OTHER]];
+  const pools=[["home",PICKUP],["bulletin",BULLETINS],["monthly",MONTHLIES],["handouts",HANDOUTS],["cs",CS],["geppo",GEPPO],["shiryo",SHIRYO],["other",OTHER]];
   let o=null,from="home";for(const [k,a] of pools){const f=a.find(x=>x.img===id);if(f){o=f;from=k;break}}
   if(!o){show("home");return}
   const title=from==="bulletin"?`${jd(o.date)}の週報`:from==="monthly"?`${o.y}年${o.m}月の予定表`:from==="geppo"?`月報 ${o.y}年${o.m}月号`:o.name;
@@ -304,7 +306,7 @@ const raw=b64(ENC),salt=raw.slice(0,16),iv=raw.slice(16,28),ct=raw.slice(28);
 const KEYNAME="ycc-key";
 async function derive(pw){const base=await crypto.subtle.importKey("raw",new TextEncoder().encode(pw),"PBKDF2",false,["deriveKey"]);return crypto.subtle.deriveKey({name:"PBKDF2",salt,iterations:600000,hash:"SHA-256"},base,{name:"AES-GCM",length:256},true,["decrypt"])}
 async function tryKey(key){const pt=await crypto.subtle.decrypt({name:"AES-GCM",iv},key,ct);return JSON.parse(new TextDecoder().decode(pt))}
-function boot(d,key){KEY=key;CS=d.CS||[];GEPPO=d.GEPPO||[];SHIRYO=d.SHIRYO||[];OTHER=d.OTHER||[];({BULLETINS,MONTHLIES,WEEK,SERMONS,HANDOUTS}=d);renderHome();renderSermons();renderHandouts();renderDocs();renderCS();renderShiryo();document.body.classList.add("open");route()}
+function boot(d,key){KEY=key;PICKUP=d.PICKUP||[];CS=d.CS||[];GEPPO=d.GEPPO||[];SHIRYO=d.SHIRYO||[];OTHER=d.OTHER||[];({BULLETINS,MONTHLIES,WEEK,SERMONS,HANDOUTS}=d);renderHome();renderSermons();renderHandouts();renderDocs();renderCS();renderShiryo();document.body.classList.add("open");route()}
 $("#lockForm").addEventListener("submit",async e=>{
   e.preventDefault();const pw=$("#pw").value.trim();if(!pw)return;
   const btn=$("#pwBtn");btn.disabled=true;btn.textContent="確認しています";$("#pwMsg").textContent="";
