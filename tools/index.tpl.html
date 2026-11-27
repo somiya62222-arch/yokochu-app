@@ -227,7 +227,7 @@ function renderCS(){
   const r=CS.filter(c=>csCat==="すべて"||c.cat===csCat).sort((a,b)=>(b.date||"").localeCompare(a.date||""));
   $("#csList").innerHTML=r.length?r.map(csCard).join(""):emptyBox("まだ載っていません","カリキュラムや行事のチラシが届くと、ここに並びます");
 }
-const docCard=o=>o.url?`<a class="item" href="${esc(o.url)}" target="_blank" rel="noopener">${o.date?`<div class="meta"><span>${esc(jd(o.date))}</span></div>`:""}<h3>${esc(o.name)}</h3><div class="go">ひらく ›</div></a>`:`<a class="item" ${lk(o)}>${o.date?`<div class="meta"><span>${esc(jd(o.date))}</span></div>`:""}<h3>${esc(o.name)}</h3>${o.img?'<div class="go">見る ›</div>':""}</a>`;
+const docCard=o=>o.links?`<a class="item" href="#${esc(o.id)}"><h3>${esc(o.name)}</h3><div class="go">ひらく ›</div></a>`:o.url?`<a class="item" href="${esc(o.url)}" target="_blank" rel="noopener">${o.date?`<div class="meta"><span>${esc(jd(o.date))}</span></div>`:""}<h3>${esc(o.name)}</h3><div class="go">ひらく ›</div></a>`:`<a class="item" ${lk(o)}>${o.date?`<div class="meta"><span>${esc(jd(o.date))}</span></div>`:""}<h3>${esc(o.name)}</h3>${o.img?'<div class="go">見る ›</div>':""}</a>`;
 function renderShiryo(){
   const g=[];SHIRYO.forEach(o=>{let x=g.find(y=>y.k===(o.group||""));if(!x)g.push(x={k:o.group||"",a:[]});x.a.push(o)});
   $("#shiryoList").innerHTML=SHIRYO.length?g.map(x=>`${x.k?`<div class="mon">${esc(x.k)}</div>`:""}<div class="list">${x.a.map(docCard).join("")}</div>`).join(""):emptyBox("まだ載っていません","");
@@ -245,7 +245,7 @@ function openRead(id){
   let html="",from="home";
   const s=SERMONS.find(x=>x.id===id);
   if(s){from="sermons";html=`<div class="meta" style="color:var(--mute);font-size:15px">${esc(jd(s.date))}　${esc(s.by)}</div><h2>${esc(s.title)}</h2><p style="color:var(--acc);font-weight:500;margin-bottom:0">${esc(s.ref)}</p><div class="blinks" style="margin-bottom:1em">${bibleHtml(s.ref)}</div>${s.lead?`<p style="color:var(--mute)">${esc(s.lead)}</p>`:""}${paras(s.body)}`}
-  else return false;
+  else{const o=OTHER.find(x=>x.id===id&&x.links);if(!o)return false;from="other";html=`<h2>${esc(o.name)}</h2><p style="color:var(--mute)">押すと、その日の放送のページが開きます</p><div class="list">${o.links.map(l=>`<a class="item" href="${esc(l.url)}" target="_blank" rel="noopener">${l.date?`<div class="meta"><span>${esc(jd(l.date))}</span></div>`:""}<h3>${esc(l.title)}</h3><div class="go">ひらく ›</div></a>`).join("")}</div>`}
   lastList=from;$("#readBody").innerHTML=html;show("read",from);return true;
 }
 async function openDoc(id){
