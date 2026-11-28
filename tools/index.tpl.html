@@ -132,7 +132,7 @@ nav.tabs{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-to
 </div></section>
 
 <section class="view" id="v-cs"><div class="wrap band">
-  <h2 class="sec">教会学校</h2><p class="sub">カリキュラムや行事のお知らせです</p>
+  <h2 class="sec">教会学校</h2><p class="sub">礼拝プログラム、カリキュラムや行事のお知らせです</p>
   <div class="chips" id="csChips" role="group" aria-label="種類"></div>
   <div class="list" id="csList"></div>
 </div></section>
@@ -223,7 +223,7 @@ function renderHandouts(){
   $("#handoutList").innerHTML=r.length?r.map(handCard).join(""):emptyBox("まだありません","");
 }
 let csCat="すべて";
-const CSCATS=["すべて","カリキュラム","行事・チラシ","その他"];
+const CSCATS=["すべて","礼拝プログラム","カリキュラム","行事・チラシ","その他"];
 const csCard=c=>`<a class="item" ${lk(c)}><div class="meta"><span class="tag">${esc(c.cat)}</span>${c.date?`<span>${esc(jd(c.date))}</span>`:""}</div><h3>${esc(c.name)}</h3>${c.img?'<div class="go">見る ›</div>':""}</a>`;
 function renderCS(){
   $("#csChips").innerHTML=CSCATS.map(c=>`<button class="chip" data-c="${esc(c)}" aria-pressed="${c===csCat}">${esc(c)}</button>`).join("");
