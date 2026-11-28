@@ -7,7 +7,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="apple-mobile-web-app-title" content="横浜中央教会">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Noto+Serif+JP:wght@500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Noto+Serif+JP:wght@500;700&family=Shippori+Mincho:wght@500;700&display=swap" rel="stylesheet">
 <style>
 /*
 VOICE: 静かで温かい、教会の受付に置かれた週報のような落ち着き
@@ -84,6 +84,59 @@ nav.tabs{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-to
 .tab svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:1.7}
 .tab[aria-current=page]{color:var(--acc);font-weight:700}
 @media(prefers-reduced-motion:no-preference){.view.on{animation:fade .25s ease}@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}}
+
+/* 案2「週報の紙面」2026年11月：紙の色・藍の墨・朱の差し色、明朝の見出し、罫線で区切る */
+:root{--bg:light-dark(#f4efe4,#1a1c22);--card:light-dark(#efe8da,#22252d);--ink:light-dark(#26324a,#ebe5d7);--mute:light-dark(#5c5a52,#aaa497);--line:light-dark(#26324a,#8f8a7e);--dot:light-dark(#8a8576,#6d685e);--acc:light-dark(#a8432f,#e59a80);--paper:light-dark(#f4efe4,#1a1c22)}
+body{padding-bottom:calc(96px + env(safe-area-inset-bottom))}
+h1,h2,h3{font-family:"Shippori Mincho","Noto Serif JP",serif}
+header.top{background:var(--bg);color:var(--ink);padding:calc(14px + env(safe-area-inset-top)) 0 0}
+header.top .wrap{border-top:3px double var(--line);border-bottom:1px solid var(--line);padding-top:8px;padding-bottom:8px;margin:0 18px;max-width:684px}
+@media(min-width:756px){header.top .wrap{margin:0 auto}}
+.brand{font-family:"Shippori Mincho","Noto Serif JP",serif;font-size:24px;letter-spacing:.14em}
+.sz{background:transparent;border:1px solid var(--line);border-radius:0;color:var(--ink)}
+.cover{background:var(--bg);color:var(--ink);padding:14px 0 6px}
+.cover .wrap.cv{display:grid;grid-template-columns:auto auto minmax(0,1fr);gap:14px;align-items:start}
+.cover h1{writing-mode:vertical-rl;font-size:clamp(24px,7.6vw,32px);line-height:1.3;letter-spacing:.08em;margin:0;max-height:min(420px,92vw)}
+.vref{writing-mode:vertical-rl;font-size:15px;color:var(--acc);letter-spacing:.1em;max-height:min(420px,92vw)}
+.cvR .kicker{font-size:13px;color:var(--acc);letter-spacing:.06em;margin-bottom:6px}
+.photo{aspect-ratio:900/840;max-height:none;margin:0 0 10px}
+.cover .open{display:flex;justify-content:center;margin-top:0;border-radius:0;background:transparent;border:1px solid var(--line);color:var(--ink)}
+.cover .blink,.blink{color:var(--ink)}
+.cover .blinks{justify-content:center}
+.band{padding:18px 0 22px}
+.sec{font-size:19px;border-top:1px solid var(--line);padding-top:10px;margin-bottom:8px}
+.sub{color:var(--mute);margin:0 0 10px}
+.list{gap:0}
+.item{background:transparent;border:0;border-bottom:1px dotted var(--dot);border-radius:0;padding:12px 0}
+.item h3{font-size:19px}
+.item .meta{color:var(--acc)}
+.go{color:var(--mute)}
+.tag{background:transparent;border:1px solid var(--acc);border-radius:0;color:var(--acc)}
+.tag.old{background:transparent;border-color:var(--mute)}
+.chips{gap:6px}
+.chip{border-radius:0;border:1px solid var(--line);background:transparent;color:var(--ink)}
+.chip[aria-pressed=true]{background:var(--ink);border-color:var(--ink);color:var(--paper);font-weight:700}
+.search{border-radius:0;border:1px solid var(--line);background:light-dark(#fbf8f1,#22252d)}
+.empty{background:transparent;border-radius:0;border-color:var(--dot)}
+.wk{background:transparent;border:0;border-radius:0}
+.wk .row{grid-template-columns:6em minmax(0,1fr);padding:8px 0;border-top:0;border-bottom:1px dotted var(--dot)}
+.wk .row.cont{border-top:0;padding-top:0;margin-top:-4px}
+.wk .row:has(+ .row.cont){border-bottom:0}
+.mon{color:var(--acc);font-family:"Shippori Mincho","Noto Serif JP",serif;font-weight:700;border-bottom:1px solid var(--line);padding-bottom:4px}
+article.read{background:transparent;border:0;border-radius:0;padding:4px 0 0}
+article.read h2{font-size:clamp(23px,6.4vw,30px)}
+article.read p{font-family:"Shippori Mincho","Noto Serif JP",serif;line-height:1.95}
+.back{color:var(--ink)}
+.pv{background:var(--card)}
+#lock{background:var(--bg);color:var(--ink)}
+#lock h1{font-family:"Shippori Mincho","Noto Serif JP",serif;letter-spacing:.14em;border-top:3px double var(--line);border-bottom:1px solid var(--line);padding:8px 0}
+#pw{border:1px solid var(--line);border-radius:0}
+#pwBtn{border-radius:0;background:var(--ink);color:var(--paper)}
+#pwMsg{color:var(--acc)}
+nav.tabs{background:var(--card);border-top:2px solid var(--line)}
+.tab{min-height:88px;writing-mode:vertical-rl;letter-spacing:.1em;font-size:13px;color:var(--ink)}
+.tab svg{display:none}
+.tab[aria-current=page]{color:var(--acc)}
 </style>
 </head>
 <body>
@@ -98,15 +151,10 @@ nav.tabs{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-to
 <header class="top"><div class="wrap"><div class="brand">横浜中央教会</div><button class="sz" id="sz" aria-pressed="false">文字を大きく</button></div></header>
 
 <section class="view" id="v-home">
-  <div class="cover"><div class="photo" role="img" aria-label="横浜中央教会の礼拝堂"></div><div class="wrap">
-    <div>
-      <div class="kicker" id="coverKicker">最新の説教</div>
-      <h1 id="coverTitle"></h1>
-      <div class="ref" id="coverRef"></div>
-      <div class="blinks" id="coverBible"></div><div id="coverZukai"></div>
-      <a class="open" id="coverOpen" href="#">要約を読む</a>
-    </div>
-    
+  <div class="cover"><div class="wrap cv">
+    <h1 id="coverTitle"></h1>
+    <div class="vref" id="coverRef"></div>
+    <div class="cvR"><div class="kicker" id="coverKicker">最新の説教</div><div class="photo" role="img" aria-label="横浜中央教会の礼拝堂"></div><a class="open" id="coverOpen" href="#">要約を読む</a><div class="blinks" id="coverBible"></div><div id="coverZukai"></div></div>
   </div></div>
   <div class="wrap">
     <div class="band" id="pickBand" hidden><h2 class="sec">お知らせ</h2><div class="list" id="pickList"></div></div>
@@ -203,7 +251,7 @@ const mCard=m=>`<a class="item" ${lk(m)}><h3>${m.y}年${m.m}月の予定表</h3>
 function renderHome(){
   const pk=PICKUP.filter(p=>p.img&&!expired(p));$("#pickBand").hidden=!pk.length;const pg=[];pk.forEach(p=>{let x=pg.find(y=>y.k===(p.group||"お知らせ"));if(!x)pg.push(x={k:p.group||"お知らせ",a:[]});x.a.push(p)});$("#pickBand").innerHTML=pg.map(x=>`<h2 class="sec">${esc(x.k)}</h2><div class="list" style="margin-bottom:8px">${x.a.map(p=>`<a class="item" ${lk(p)}><h3>${esc(p.name)}</h3><div class="go">見る ›</div></a>`).join("")}</div>`).join("");
   const s=SERMONS[0];
-  $("#coverKicker").textContent=`最新の説教　${jd(s.date)}`;
+  $("#coverKicker").textContent=`最新の説教　${+s.date.slice(5,7)}月${+s.date.slice(8,10)}日`;
   $("#coverTitle").textContent=s.title;
   $("#coverRef").textContent=`${s.ref}　${s.by}`;
   $("#coverBible").innerHTML=bibleHtml(s.ref);$("#coverZukai").innerHTML=zukaiHtml(s);
