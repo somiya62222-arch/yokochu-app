@@ -137,6 +137,8 @@ nav.tabs{background:var(--card);border-top:2px solid var(--line)}
 .tab{min-height:88px;writing-mode:vertical-rl;letter-spacing:.1em;font-size:13px;color:var(--ink)}
 .tab svg{display:none}
 .tab[aria-current=page]{color:var(--acc)}
+.tcy{text-combine-upright:all;-webkit-text-combine:horizontal}
+.rot{display:inline-block;transform:rotate(90deg)}
 </style>
 </head>
 <body>
@@ -248,12 +250,13 @@ const lk=o=>o.img?`href="#doc-${o.img}"`:"";
 const bCard=b=>`<a class="item" ${lk(b)}><h3>${esc(jd(b.date))}の週報</h3>${b.note?`<div class="meta">${esc(b.note)}</div>`:""}<div class="go">週報を見る ›</div></a>`;
 const mCard=m=>`<a class="item" ${lk(m)}><h3>${m.y}年${m.m}月の予定表</h3><div class="go">予定表を見る ›</div></a>`;
 
+const tate=(t,br)=>{let h=esc(String(t??"").replace(/(\d)\s*[-－–—~～]\s*(?=\d)/g,"$1〜")).replace(/[0-9]{1,3}/g,m=>`<span class="tcy">${m}</span>`);h=h.replace(/〜/g,'<span class="rot">〜</span>');if(br)h=h.replace(/([。！？])(?=\S)/g,"$1<br>");return h};
 function renderHome(){
   const pk=PICKUP.filter(p=>p.img&&!expired(p));$("#pickBand").hidden=!pk.length;const pg=[];pk.forEach(p=>{let x=pg.find(y=>y.k===(p.group||"お知らせ"));if(!x)pg.push(x={k:p.group||"お知らせ",a:[]});x.a.push(p)});$("#pickBand").innerHTML=pg.map(x=>`<h2 class="sec">${esc(x.k)}</h2><div class="list" style="margin-bottom:8px">${x.a.map(p=>`<a class="item" ${lk(p)}><h3>${esc(p.name)}</h3><div class="go">見る ›</div></a>`).join("")}</div>`).join("");
   const s=SERMONS[0];
   $("#coverKicker").textContent=`最新の説教　${+s.date.slice(5,7)}月${+s.date.slice(8,10)}日`;
-  $("#coverTitle").textContent=s.title;
-  $("#coverRef").textContent=`${s.ref}　${s.by}`;
+  $("#coverTitle").innerHTML=tate(s.title,true);
+  $("#coverRef").innerHTML=tate(`${s.ref}　${s.by}`);
   $("#coverBible").innerHTML=bibleHtml(s.ref);$("#coverZukai").innerHTML=zukaiHtml(s);
   $("#coverOpen").href="#"+s.id;
   const wb=BULLETINS.find(b=>b.date===WEEK.from);
