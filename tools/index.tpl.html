@@ -103,7 +103,7 @@ nav.tabs{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-to
       <div class="kicker" id="coverKicker">最新の説教</div>
       <h1 id="coverTitle"></h1>
       <div class="ref" id="coverRef"></div>
-      <div class="blinks" id="coverBible"></div>
+      <div class="blinks" id="coverBible"></div><div id="coverZukai"></div>
       <a class="open" id="coverOpen" href="#">要約を読む</a>
     </div>
     
@@ -206,7 +206,7 @@ function renderHome(){
   $("#coverKicker").textContent=`最新の説教　${jd(s.date)}`;
   $("#coverTitle").textContent=s.title;
   $("#coverRef").textContent=`${s.ref}　${s.by}`;
-  $("#coverBible").innerHTML=bibleHtml(s.ref);
+  $("#coverBible").innerHTML=bibleHtml(s.ref);$("#coverZukai").innerHTML=zukaiHtml(s);
   $("#coverOpen").href="#"+s.id;
   const wb=BULLETINS.find(b=>b.date===WEEK.from);
   $("#weekSub").textContent=`${jd(WEEK.from)}の週報より`;
@@ -250,20 +250,23 @@ function renderDocs(){
   $("#monthlyList").innerHTML=`<div class="list">${MONTHLIES.map(mCard).join("")}</div>`;
 }
 const bibleHtml=ref=>{const l=bibleLinks(ref);return l.map(x=>`<a class="blink" href="${esc(x.url)}" target="_blank" rel="noopener">${l.length>1?esc(x.label)+"を":""}bible.comで読む（新共同訳）</a>`).join("")};
+const zukaiHtml=s=>s.zukai?`<div class="blinks"><a class="blink" href="#doc-${esc(s.zukai)}">図解（Gemini作成）を見る</a></div>`:"";
 const paras=a=>a.map(p=>`<p>${esc(p)}</p>`).join("");
 function openRead(id){
   let html="",from="home";
   const s=SERMONS.find(x=>x.id===id);
-  if(s){from="sermons";html=`<div class="meta" style="color:var(--mute);font-size:15px">${esc(jd(s.date))}　${esc(s.by)}</div><h2>${esc(s.title)}</h2><p style="color:var(--acc);font-weight:500;margin-bottom:0">${esc(s.ref)}</p><div class="blinks" style="margin-bottom:1em">${bibleHtml(s.ref)}</div>${s.lead?`<p style="color:var(--mute)">${esc(s.lead)}</p>`:""}${paras(s.body)}`}
+  if(s){from="sermons";html=`<div class="meta" style="color:var(--mute);font-size:15px">${esc(jd(s.date))}　${esc(s.by)}</div><h2>${esc(s.title)}</h2><p style="color:var(--acc);font-weight:500;margin-bottom:0">${esc(s.ref)}</p><div class="blinks">${bibleHtml(s.ref)}</div><div style="margin-bottom:1em">${zukaiHtml(s)}</div>${s.lead?`<p style="color:var(--mute)">${esc(s.lead)}</p>`:""}${paras(s.body)}`}
   else{const o=OTHER.find(x=>x.id===id&&x.links);if(!o)return false;from="other";html=`<h2>${esc(o.name)}</h2><p style="color:var(--mute)">押すと、その日の放送のページが開きます</p><div class="list">${o.links.map(l=>`<a class="item" href="${esc(l.url)}" target="_blank" rel="noopener">${l.date?`<div class="meta"><span>${esc(jd(l.date))}</span></div>`:""}<h3>${esc(l.title)}</h3><div class="go">ひらく ›</div></a>`).join("")}</div>`}
   lastList=from;$("#readBody").innerHTML=html;show("read",from);return true;
 }
 async function openDoc(id){
   const pools=[["home",PICKUP],["bulletin",BULLETINS],["monthly",MONTHLIES],["handouts",HANDOUTS],["cs",CS],["geppo",GEPPO],["shiryo",SHIRYO],["other",OTHER]];
   let o=null,from="home";for(const [k,a] of pools){const f=a.find(x=>x.img===id);if(f){o=f;from=k;break}}
+  let backTo=null;
+  if(!o){const sm=SERMONS.find(x=>x.zukai===id);if(sm){o={name:`図解　${sm.title}`};from="sermons";backTo=sm.id}}
   if(!o){show("home");return}
   const title=from==="bulletin"?`${jd(o.date)}の週報`:from==="monthly"?`${o.y}年${o.m}月の予定表`:from==="geppo"?`月報 ${o.y}年${o.m}月号`:o.name;
-  lastList=from;
+  lastList=backTo||from;
   $("#readBody").innerHTML=`<h2>${esc(title)}</h2><div class="hint">読み込んでいます</div><div class="pv" id="pv"></div>`;
   show("read",from);
   try{
